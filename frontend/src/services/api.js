@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({
+  baseURL: 'https://genieai-enj6.onrender.com/'
+})
 
 export const generateIdeas  = (data) => api.post('/ideas/generate', data)
 export const generateRoadmap = (data) => api.post('/roadmap/generate', data)
