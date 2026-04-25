@@ -258,3 +258,50 @@ Return ONLY valid JSON:
         print("DIFFICULTY JSON ERROR:", e)
         print(raw)
         raise e
+
+
+# ---------------------------------------------------
+# AI IDEA EVOLUTION
+# ---------------------------------------------------
+def evolve_idea_step(idea_title, idea_description, tech_stack, step_label, step_description):
+    """
+    Evolves a project idea through a specific stage
+    """
+    prompt = f"""For this final year project:
+
+Project: "{idea_title}"
+Description: {idea_description}
+Current Tech Stack: {', '.join(tech_stack)}
+
+Evolution Stage: "{step_label}"
+Stage Goal: {step_description}
+
+Provide a practical, detailed implementation guide for THIS SPECIFIC STAGE.
+
+Include:
+1. What to build in this stage
+2. Specific technologies/tools to use (be concrete)
+3. Code approach and architecture decisions
+4. What this stage unlocks for the project
+
+Keep it actionable and specific to THIS project. 150 words max.
+
+Return plain text, no JSON, no markdown formatting."""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a senior project architect providing stage-by-stage implementation guidance. Be specific and practical."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.7,
+        max_tokens=500,
+    )
+
+    return response.choices[0].message.content.strip()
