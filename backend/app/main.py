@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import ideas, roadmap, stack, saved, chat
+from app.routes import ideas, roadmap, stack, saved, chat, evolution
 
 app = FastAPI(title="GenieAI API", version="1.0.0")
 
@@ -17,7 +17,7 @@ app.include_router(roadmap.router, prefix="/api/roadmap", tags=["Roadmap"])
 app.include_router(stack.router,   prefix="/api/stack",   tags=["Stack"])
 app.include_router(saved.router,   prefix="/api/saved",   tags=["Saved"])
 app.include_router(chat.router,    prefix="/api/chat",    tags=["Chat"])
-
+app.include_router(evolution.router, prefix="/api/evolution", tags=["Evolution"])
 @app.get("/")
 def root():
     return {"message": "GenieAI API is running", "version": "1.0.0"}
