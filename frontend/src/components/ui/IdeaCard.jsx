@@ -96,6 +96,7 @@ export default function IdeaCard({ idea, savedId = null, userSkills = '' }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', paddingTop: '16px', borderTop: '1px solid #2a2d3e' }}>
         <button onClick={goRoadmap} className="btn-primary" style={{ fontSize: '13px', padding: '8px 14px' }}>🗺️ Get Roadmap</button>
         <button onClick={() => navigate('/stack', { state: { idea } })} className="btn-ghost" style={{ fontSize: '13px', padding: '8px 14px' }}>⚙️ Tech Stack</button>
+         <button onClick={() => navigate('/evolve', { state: { idea } })} className="btn-ghost" style={{ fontSize: '13px', padding: '8px 14px' }}>🧬 Evolve</button>
         <button onClick={() => navigate('/chat', { state: { title: idea.title } })} className="btn-ghost" style={{ fontSize: '13px', padding: '8px 14px' }}>💬 Discuss</button>
       </div>
     </div>

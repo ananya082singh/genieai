@@ -6,6 +6,7 @@ import StackPage from './pages/StackPage'
 import SavedPage from './pages/SavedPage'
 import SearchPage from './pages/SearchPage'
 import ChatPage from './pages/ChatPage'
+import EvolvePage from './pages/EvolvePage'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/saved" element={<SavedPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/evolve" element={<EvolvePage />} />
         </Routes>
       </main>
     </div>
