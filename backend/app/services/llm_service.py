@@ -10,8 +10,10 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 MODEL = "llama-3.3-70b-versatile"
 
 
+# ---------------------------------------------------
+# CLEAN JSON
+# ---------------------------------------------------
 def _clean_json(raw: str) -> str:
-    """Strip markdown code fences and return clean JSON string."""
     raw = raw.strip()
     raw = re.sub(r"^```json\s*", "", raw)
     raw = re.sub(r"^```\s*", "", raw)
@@ -19,124 +21,166 @@ def _clean_json(raw: str) -> str:
     return raw.strip()
 
 
-def generate_ideas(branch: str, skills: str, interests: str,
-                   domain: str = None, difficulty: str = None) -> list:
-    domain_clause = f"Domain focus: {domain}" if domain else "Domain: open to any"
-    diff_clause = f"Difficulty: {difficulty}" if difficulty else "Difficulty: any level"
+# ---------------------------------------------------
+# GENERATE IDEAS
+# ---------------------------------------------------
+def generate_ideas(branch, skills, interests, domain=None, difficulty=None):
 
-    prompt = f"""Generate exactly 4 unique and innovative final year engineering project ideas for a student with these details:
+    prompt = f"""
+Generate exactly 4 innovative engineering final year project ideas.
 
-Branch/Specialization: {branch}
-Technical Skills: {skills}
-Interests & Problem Areas: {interests}
-{domain_clause}
-{diff_clause}
+Branch: {branch}
+Skills: {skills}
+Interests: {interests}
+Domain: {domain}
+Difficulty: {difficulty}
 
-Return ONLY a valid JSON array, no markdown, no explanation, no extra text:
+Return ONLY valid JSON array:
 [
   {{
-    "title": "Specific Project Title",
-    "description": "2-3 sentence description explaining what the project does and its real-world impact",
-    "domain": "one of: AI/ML, Web, Mobile, IoT, Blockchain, Cybersecurity, Cloud, AR/VR, Healthcare, FinTech, EdTech",
-    "difficulty": "Beginner or Intermediate or Advanced",
-    "techStack": ["tech1", "tech2", "tech3", "tech4", "tech5"],
-    "outcome": "What the student demonstrates/achieves on completing this",
-    "novelty": "What makes this project innovative or impactful"
+    "title": "",
+    "description": "",
+    "domain": "",
+    "difficulty": "",
+    "techStack": [],
+    "outcome": "",
+    "novelty": ""
   }}
-]"""
+]
+"""
 
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
-            {"role": "system", "content": "You are a senior engineering professor and project advisor. Respond ONLY with valid JSON. No explanation. No markdown."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.8,
-        max_tokens=3000,
-    )
-    raw = response.choices[0].message.content
-    return json.loads(_clean_json(raw))
-
-
-def generate_roadmap(title: str, description: str, tech_stack: list,
-                     difficulty: str, domain: str = None) -> dict:
-    prompt = f"""Create a detailed 12-week project roadmap for this final year project:
-
-Project Title: {title}
-Description: {description}
-Tech Stack: {", ".join(tech_stack)}
-Difficulty: {difficulty}
-Domain: {domain or "General"}
-
-Return ONLY a valid JSON object:
-{{
-  "overview": "2-sentence project overview and goal",
-  "weeks": [
-    {{
-      "week": "Week 1-2",
-      "phase": "Setup & Planning",
-      "tasks": "Detailed description of what to build/learn this period",
-      "milestone": "Concrete deliverable for this period",
-      "resources": [
-        {{"label": "Resource name", "type": "YouTube or Docs or Tool or Course"}}
-      ]
-    }}
-  ],
-  "finalMilestone": "What the complete project achieves"
-}}
-
-Generate exactly 6 week-groups covering: Environment Setup, Core Architecture, Feature Development, Advanced Features, Testing & Optimization, Deployment & Presentation.
-Each week group must have 2-4 resources."""
-
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": "You are an expert project planning engineer. Return ONLY valid JSON. No markdown. No explanation."},
-            {"role": "user", "content": prompt}
+            {
+                "role": "system",
+                "content": "Return ONLY valid JSON."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
         ],
         temperature=0.7,
-        max_tokens=4000,
+        max_tokens=2500,
     )
+
     raw = response.choices[0].message.content
-    return json.loads(_clean_json(raw))
+
+    try:
+        cleaned = _clean_json(raw)
+        return json.loads(cleaned)
+
+    except Exception as e:
+        print("GENERATE IDEAS ERROR:", e)
+        print(raw)
+        raise e
 
 
-def recommend_stack(project_description: str, team_size: str,
-                    time_available: str, deployment_target: str) -> dict:
-    prompt = f"""Recommend the optimal, modern tech stack for this student project:
+# ---------------------------------------------------
+# GENERATE ROADMAP
+# ---------------------------------------------------
+def generate_roadmap(title, description, tech_stack, difficulty, domain=None):
+
+    prompt = f"""
+Create a detailed 12-week roadmap.
+
+Project: {title}
+Description: {description}
+Tech Stack: {', '.join(tech_stack)}
+Difficulty: {difficulty}
+Domain: {domain}
+
+Return ONLY valid JSON:
+{{
+  "overview": "",
+  "weeks": [],
+  "finalMilestone": ""
+}}
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "Return ONLY valid JSON."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.6,
+        max_tokens=3000,
+    )
+
+    raw = response.choices[0].message.content
+
+    try:
+        cleaned = _clean_json(raw)
+        return json.loads(cleaned)
+
+    except Exception as e:
+        print("ROADMAP ERROR:", e)
+        print(raw)
+        raise e
+
+
+# ---------------------------------------------------
+# RECOMMEND STACK
+# ---------------------------------------------------
+def recommend_stack(project_description, team_size, time_available, deployment_target):
+
+    prompt = f"""
+Recommend a modern tech stack.
 
 Project: {project_description}
 Team Size: {team_size}
 Timeline: {time_available}
-Deployment Target: {deployment_target}
+Deployment: {deployment_target}
 
-Return ONLY valid JSON:
-{{
-  "frontend": {{"technologies": ["tech1", "tech2"], "why": "reason"}},
-  "backend": {{"technologies": ["tech1", "tech2"], "why": "reason"}},
-  "database": {{"technologies": ["tech1"], "why": "reason"}},
-  "ai_ml": {{"technologies": ["tech1", "tech2"], "why": "reason or skip if not needed"}},
-  "devops": {{"technologies": ["tech1", "tech2"], "why": "reason"}},
-  "extras": {{"technologies": ["tool1", "tool2"], "why": "reason"}},
-  "summary": "2-sentence rationale for the overall technology choices"
-}}"""
+Return ONLY valid JSON.
+"""
 
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
-            {"role": "system", "content": "You are a senior software architect. Return ONLY valid JSON. No markdown. No explanation."},
-            {"role": "user", "content": prompt}
+            {
+                "role": "system",
+                "content": "Return ONLY valid JSON."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
         ],
-        temperature=0.6,
+        temperature=0.5,
         max_tokens=2000,
     )
+
     raw = response.choices[0].message.content
-    return json.loads(_clean_json(raw))
+
+    try:
+        cleaned = _clean_json(raw)
+        return json.loads(cleaned)
+
+    except Exception as e:
+        print("STACK ERROR:", e)
+        print(raw)
+        raise e
 
 
-def chat_with_assistant(messages: list) -> str:
+# ---------------------------------------------------
+# CHAT ASSISTANT
+# ---------------------------------------------------
+def chat_with_assistant(messages):
+
     groq_messages = [
-        {"role": "system", "content": "You are GenieAI, an expert academic project advisor helping engineering students with their final year projects. Be concise, practical, and encouraging. Provide actionable, specific guidance."}
+        {
+            "role": "system",
+            "content": "You are GenieAI, an expert engineering project mentor."
+        }
     ] + messages
 
     response = client.chat.completions.create(
@@ -145,4 +189,72 @@ def chat_with_assistant(messages: list) -> str:
         temperature=0.7,
         max_tokens=1000,
     )
+
     return response.choices[0].message.content
+
+
+# ---------------------------------------------------
+# DIFFICULTY ANALYSIS
+# ---------------------------------------------------
+def analyze_project_difficulty(
+    idea_title,
+    idea_description,
+    tech_stack,
+    user_skills
+):
+
+    prompt = f"""
+Analyze this project difficulty.
+
+Project Title: {idea_title}
+Description: {idea_description}
+Tech Stack: {', '.join(tech_stack)}
+Student Skills: {user_skills}
+
+Return ONLY valid JSON:
+{{
+  "difficulty_score": 7,
+  "skill_match_percent": 60,
+  "missing_skills": [],
+  "known_skills": [],
+  "estimated_weeks": 12,
+  "learning_curve": "Moderate",
+  "complexity_breakdown": {{
+    "frontend": 5,
+    "backend": 7,
+    "ai_ml": 8,
+    "deployment": 4
+  }},
+  "recommendation": ""
+}}
+"""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "Return ONLY valid JSON."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3,
+        max_tokens=1200,
+    )
+
+    raw = response.choices[0].message.content
+
+    try:
+        cleaned = _clean_json(raw)
+
+        print("DIFFICULTY RESPONSE:", cleaned)
+
+        return json.loads(cleaned)
+
+    except Exception as e:
+        print("DIFFICULTY JSON ERROR:", e)
+        print(raw)
+        raise e
