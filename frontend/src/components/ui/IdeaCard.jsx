@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { saveIdea, deleteSaved } from '../../services/api'
 import useStore from '../../store/useStore'
 import toast from 'react-hot-toast'
+import DifficultyAnalyzer from './DifficultyAnalyzer'
 
-export default function IdeaCard({ idea, savedId = null }) {
+export default function IdeaCard({ idea, savedId = null, userSkills = '' }) {
   const navigate = useNavigate()
   const { addSaved, removeSaved, savedIdeas, setCurrentIdea, setCurrentRoadmap } = useStore()
   const [saving, setSaving] = useState(false)
@@ -88,6 +89,9 @@ export default function IdeaCard({ idea, savedId = null }) {
           🎯 <strong>Outcome:</strong> {idea.outcome}
         </div>
       )}
+
+      {/* NEW: Difficulty Analyzer */}
+      <DifficultyAnalyzer idea={idea} userSkills={userSkills} />
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', paddingTop: '16px', borderTop: '1px solid #2a2d3e' }}>
         <button onClick={goRoadmap} className="btn-primary" style={{ fontSize: '13px', padding: '8px 14px' }}>🗺️ Get Roadmap</button>

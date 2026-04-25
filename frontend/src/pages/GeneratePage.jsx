@@ -97,7 +97,7 @@ export default function GeneratePage() {
         </div>
       )}
 
-      {!loading && results.length > 0 && results.map((idea, i) => <IdeaCard key={i} idea={idea} />)}
+      {!loading && results.length > 0 && results.map((idea, i) => <IdeaCard key={i} idea={idea} userSkills={form.skills} />)}
     </div>
   )
 }
