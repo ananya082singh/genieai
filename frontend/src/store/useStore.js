@@ -19,6 +19,24 @@ const useStore = create((set) => ({
 
   addChatMessage: (msg) => set((s) => ({ chatHistory: [...s.chatHistory, msg] })),
   setChatHistory: (chatHistory) => set({ chatHistory }),
+
+  user: null,
+  token: localStorage.getItem('token') || null,
+  
+  setUser: (user) => set({ user }),
+  setToken: (token) => {
+    if (token) {
+      localStorage.setItem('token', token)
+    } else {
+      localStorage.removeItem('token')
+    }
+    set({ token })
+  },
+  logout: () => {
+    localStorage.removeItem('token')
+    set({ user: null, token: null })
+  },
 }))
 
 export default useStore
+
