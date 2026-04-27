@@ -95,3 +95,24 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    
+# Authentication Models
+class UserRegister(BaseModel):
+    email: str
+    password: str
+    name: str
+    branch: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class User(BaseModel):
+    id: str
+    email: str
+    name: str
+    branch: Optional[str] = None    
