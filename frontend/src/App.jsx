@@ -7,6 +7,7 @@ import SavedPage from './pages/SavedPage'
 import SearchPage from './pages/SearchPage'
 import ChatPage from './pages/ChatPage'
 import EvolvePage from './pages/EvolvePage'
+import DashboardPage from './pages/DashboardPage'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/evolve" element={<EvolvePage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </main>
     </div>

@@ -1,7 +1,11 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import useStore from '../../store/useStore'
 
+
 const navItems = [
+   { section: 'Overview', items: [
+    { path: '/dashboard', icon: '📈', label: 'Dashboard' },
+  ]},
   { section: 'Generate', items: [
     { path: '/',        icon: '💡', label: 'Idea Generator' },
     { path: '/roadmap', icon: '🗺️', label: 'Roadmaps' },
