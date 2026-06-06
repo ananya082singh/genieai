@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import ideas, roadmap, stack, saved, chat, evolution
 from app.routes import ideas, roadmap, stack, saved, chat, evolution, auth
+from app.utils.user_store import create_user, user_exists
+from app.utils.auth import get_password_hash
 
 app = FastAPI(title="GenieAI API", version="1.0.0")
 
@@ -20,6 +21,17 @@ app.include_router(saved.router,   prefix="/api/saved",   tags=["Saved"])
 app.include_router(chat.router,    prefix="/api/chat",    tags=["Chat"])
 app.include_router(evolution.router, prefix="/api/evolution", tags=["Evolution"])
 app.include_router(auth.router,    prefix="/api/auth",    tags=["Auth"])
+
+@app.on_event("startup")
+async def startup_event():
+    email = "anu082singh@gmail.com"
+    if not user_exists(email):
+        create_user(
+            email=email,
+            hashed_password=get_password_hash("ananya02"),
+            name="Ananya Singh",
+            branch="Computer Science"
+        )
 
 @app.get("/")
 def root():

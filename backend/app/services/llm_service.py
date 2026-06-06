@@ -19,8 +19,7 @@ def _clean_json(raw: str) -> str:
     raw = re.sub(r"^```\s*", "", raw)
     raw = re.sub(r"```$", "", raw)
     return raw.strip()
-
-
+    
 # ---------------------------------------------------
 # GENERATE IDEAS
 # ---------------------------------------------------
@@ -80,23 +79,68 @@ Return ONLY valid JSON array:
 # ---------------------------------------------------
 # GENERATE ROADMAP
 # ---------------------------------------------------
+# ---------------------------------------------------
+# GENERATE ROADMAP
+# ---------------------------------------------------
 def generate_roadmap(title, description, tech_stack, difficulty, domain=None):
 
     prompt = f"""
-Create a detailed 12-week roadmap.
+You are an expert engineering project mentor.
 
-Project: {title}
-Description: {description}
-Tech Stack: {', '.join(tech_stack)}
-Difficulty: {difficulty}
-Domain: {domain}
+Generate a HIGHLY SPECIFIC roadmap ONLY for THIS project.
 
-Return ONLY valid JSON:
+PROJECT TITLE:
+{title}
+
+PROJECT DESCRIPTION:
+{description}
+
+TECH STACK:
+{', '.join(tech_stack)}
+
+DIFFICULTY:
+{difficulty}
+
+DOMAIN:
+{domain}
+
+IMPORTANT RULES:
+- Do NOT generate roadmap for any other project.
+- Every week MUST directly relate to THIS exact project.
+- Include practical implementation tasks.
+- Avoid generic filler content.
+- Mention real development/build steps.
+- Keep tasks realistic for engineering students.
+- Generate the appropriate number of weeks (between 6 to 12 weeks) depending on the complexity, scope, and difficulty of this specific project. Do not hardcode 12 weeks for every project.
+
+Return ONLY valid JSON in this EXACT structure:
+
 {{
-  "overview": "",
-  "weeks": [],
-  "finalMilestone": ""
+  "overview": "Short project execution overview",
+
+  "weeks": [
+    {{
+      "week": "Week 1",
+      "phase": "Research",
+      "tasks": "Specific tasks for THIS project only",
+      "milestone": "Expected achievement",
+      "resources": [
+        {{
+          "type": "YouTube",
+          "label": "Resource name"
+        }}
+      ]
+    }}
+  ],
+
+  "finalMilestone": "Final project outcome"
 }}
+
+DO NOT use examples from other healthcare systems.
+DO NOT mention glucose monitoring.
+DO NOT generate unrelated biomedical content.
+DO NOT add markdown.
+DO NOT add explanation outside JSON.
 """
 
     response = client.chat.completions.create(
@@ -104,43 +148,92 @@ Return ONLY valid JSON:
         messages=[
             {
                 "role": "system",
-                "content": "Return ONLY valid JSON."
+                "content": "You are a project planning expert. Return ONLY valid JSON."
             },
             {
                 "role": "user",
                 "content": prompt
             }
         ],
-        temperature=0.6,
-        max_tokens=3000,
+        temperature=0.4,
+        max_tokens=3500,
     )
 
     raw = response.choices[0].message.content
 
+    print("RAW ROADMAP RESPONSE:")
+    print(raw)
+
     try:
         cleaned = _clean_json(raw)
-        return json.loads(cleaned)
+
+        print("CLEANED ROADMAP:")
+        print(cleaned)
+
+        parsed = json.loads(cleaned)
+
+        if "weeks" not in parsed:
+            parsed["weeks"] = []
+
+        return parsed
 
     except Exception as e:
-        print("ROADMAP ERROR:", e)
+        print("ROADMAP JSON ERROR:", e)
         print(raw)
-        raise e
 
-
+        return {
+            "overview": "Roadmap generation failed due to invalid AI response.",
+            "weeks": [],
+            "finalMilestone": "Retry roadmap generation."
+        }
 # ---------------------------------------------------
 # RECOMMEND STACK
 # ---------------------------------------------------
 def recommend_stack(project_description, team_size, time_available, deployment_target):
 
     prompt = f"""
-Recommend a modern tech stack.
+Recommend the BEST modern tech stack.
 
 Project: {project_description}
 Team Size: {team_size}
 Timeline: {time_available}
 Deployment: {deployment_target}
 
-Return ONLY valid JSON.
+Return ONLY valid JSON in this EXACT format:
+
+{{
+  "summary": "",
+
+  "frontend": {{
+    "technologies": [],
+    "why": ""
+  }},
+
+  "backend": {{
+    "technologies": [],
+    "why": ""
+  }},
+
+  "database": {{
+    "technologies": [],
+    "why": ""
+  }},
+
+  "ai_ml": {{
+    "technologies": [],
+    "why": ""
+  }},
+
+  "devops": {{
+    "technologies": [],
+    "why": ""
+  }},
+
+  "extras": {{
+    "technologies": [],
+    "why": ""
+  }}
+}}
 """
 
     response = client.chat.completions.create(
@@ -163,14 +256,14 @@ Return ONLY valid JSON.
 
     try:
         cleaned = _clean_json(raw)
+        print("STACK CLEANED:", cleaned)
         return json.loads(cleaned)
 
     except Exception as e:
         print("STACK ERROR:", e)
         print(raw)
         raise e
-
-
+    
 # ---------------------------------------------------
 # CHAT ASSISTANT
 # ---------------------------------------------------

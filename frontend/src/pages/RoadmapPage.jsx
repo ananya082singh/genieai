@@ -256,8 +256,15 @@ export default function RoadmapPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (currentIdea && !currentRoadmap) {
-      fetchRoadmap()
+    if (currentIdea) {
+      const cacheKey = `roadmap_data_${currentIdea.title}`
+      const cached = localStorage.getItem(cacheKey)
+      if (cached) {
+        setCurrentRoadmap(JSON.parse(cached))
+      } else {
+        setCurrentRoadmap(null)
+        fetchRoadmap()
+      }
     }
   }, [currentIdea])
 
@@ -273,6 +280,7 @@ export default function RoadmapPage() {
         domain: currentIdea.domain
       })
       setCurrentRoadmap(res.data)
+      localStorage.setItem(`roadmap_data_${currentIdea.title}`, JSON.stringify(res.data))
       toast.success('Roadmap generated!')
     } catch (err) {
       toast.error('Failed to generate roadmap')

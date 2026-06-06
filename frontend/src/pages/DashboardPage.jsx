@@ -18,9 +18,33 @@ export default function DashboardPage() {
     const progress = {}
     savedIdeas.forEach(saved => {
       const title = saved.idea.title
-      let completed = 0
-      let total = 6 // Assuming 6 week-groups per roadmap
       
+      // Read the actual number of weeks from cached roadmap data
+      const cacheKey = `roadmap_data_${title}`
+      const cached = localStorage.getItem(cacheKey)
+      let total = 6
+      if (cached) {
+        try {
+          const roadmapObj = JSON.parse(cached)
+          if (roadmapObj && Array.isArray(roadmapObj.weeks)) {
+            total = roadmapObj.weeks.length
+          }
+        } catch (e) {
+          console.error('Error parsing cached roadmap:', e)
+        }
+      } else {
+        // Fallback default duration based on difficulty if roadmap not generated yet
+        const difficulty = saved.idea.difficulty?.toLowerCase() || ''
+        if (difficulty.includes('beginner')) {
+          total = 6
+        } else if (difficulty.includes('intermediate') || difficulty.includes('medium')) {
+          total = 8
+        } else {
+          total = 12
+        }
+      }
+      
+      let completed = 0
       for (let i = 0; i < total; i++) {
         const key = `roadmap_${title}_week_${i}`
         const data = JSON.parse(localStorage.getItem(key) || '{"done":false}')
@@ -184,7 +208,16 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {savedIdeas.map((saved, idx) => {
               const idea = saved.idea
-              const progress = roadmapProgress[idea.title] || { completed: 0, total: 6, percent: 0 }
+              const difficulty = idea.difficulty?.toLowerCase() || ''
+              let defaultTotal = 6
+              if (difficulty.includes('beginner')) {
+                defaultTotal = 6
+              } else if (difficulty.includes('intermediate') || difficulty.includes('medium')) {
+                defaultTotal = 8
+              } else {
+                defaultTotal = 12
+              }
+              const progress = roadmapProgress[idea.title] || { completed: 0, total: defaultTotal, percent: 0 }
               const isComplete = progress.percent === 100
 
               return (
