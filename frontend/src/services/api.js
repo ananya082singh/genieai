@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api'
+  baseURL: 'https://genieai-enj6.onrender.com/api'
 })
 // Add auth token to all requests
 api.interceptors.request.use(
