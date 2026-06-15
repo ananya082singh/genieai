@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { login, register } from '../services/api'
 import useStore from '../store/useStore'
 import toast from 'react-hot-toast'
+import { Terminal } from 'lucide-react'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { setToken, setUser } = useStore()
+  const { setToken } = useStore()
   const [isRegister, setIsRegister] = useState(false)
   const [form, setForm] = useState({ email: '', password: '', name: '', branch: '' })
   const [loading, setLoading] = useState(false)
@@ -41,14 +42,15 @@ export default function LoginPage() {
 
   const inputStyle = {
     width: '100%',
-    background: '#13151f',
-    border: '1px solid #2a2d3e',
+    background: 'var(--bg-input)',
+    border: '1px solid var(--border)',
     borderRadius: '8px',
     padding: '12px 16px',
-    color: '#f0f0f8',
+    color: 'var(--text-primary)',
     fontSize: '14px',
     outline: 'none',
-    fontFamily: 'DM Sans, sans-serif'
+    fontFamily: 'var(--font-body)',
+    transition: 'all 0.2s'
   }
 
   return (
@@ -57,24 +59,39 @@ export default function LoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '2rem'
+      padding: '2rem',
+      background: 'var(--bg-app)',
+      transition: 'background-color 0.2s'
     }}>
       <div style={{ width: '100%', maxWidth: '420px' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🧞</div>
           <div style={{
-            fontFamily: 'Syne, sans-serif',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            color: 'var(--accent)',
+            marginBottom: '1rem',
+            transition: 'all 0.2s'
+          }}>
+            <Terminal size={32} />
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-display)',
             fontSize: '2rem',
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #7c6af7, #5ad4c8)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            marginBottom: '0.5rem'
+            color: 'var(--text-primary)',
+            marginBottom: '0.5rem',
+            transition: 'color 0.2s'
           }}>
             GenieAI
           </div>
-          <p style={{ color: '#8a8aaa', fontSize: '14px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '14px', transition: 'color 0.2s' }}>
             {isRegister ? 'Create your account' : 'Welcome back'}
           </p>
         </div>
@@ -83,7 +100,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="card" style={{ padding: '2rem' }}>
           {isRegister && (
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontSize: '12px', color: '#8a8aaa', marginBottom: '6px', fontWeight: 500 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
                 Full Name
               </label>
               <input
@@ -97,7 +114,7 @@ export default function LoginPage() {
           )}
 
           <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: '#8a8aaa', marginBottom: '6px', fontWeight: 500 }}>
+            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
               Email
             </label>
             <input
@@ -110,7 +127,7 @@ export default function LoginPage() {
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', fontSize: '12px', color: '#8a8aaa', marginBottom: '6px', fontWeight: 500 }}>
+            <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
               Password
             </label>
             <input
@@ -124,7 +141,7 @@ export default function LoginPage() {
 
           {isRegister && (
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '12px', color: '#8a8aaa', marginBottom: '6px', fontWeight: 500 }}>
+              <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
                 Branch (Optional)
               </label>
               <input
@@ -146,7 +163,7 @@ export default function LoginPage() {
             {loading ? 'Processing...' : isRegister ? 'Create Account' : 'Sign In'}
           </button>
 
-          <div style={{ textAlign: 'center', fontSize: '13px', color: '#8a8aaa' }}>
+          <div style={{ textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)' }}>
             {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button
               type="button"
@@ -154,7 +171,7 @@ export default function LoginPage() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#7c6af7',
+                color: 'var(--accent)',
                 cursor: 'pointer',
                 textDecoration: 'underline'
               }}
