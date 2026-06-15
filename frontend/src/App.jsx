@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Sidebar from './components/layout/Sidebar'
@@ -30,7 +31,8 @@ function AppLayout({ children }) {
       style={{
         display: 'flex',
         minHeight: '100vh',
-        background: '#0c0e14',
+        background: 'var(--bg-app)',
+        transition: 'background-color 0.2s ease',
       }}
     >
       <Sidebar />
@@ -49,7 +51,11 @@ function AppLayout({ children }) {
 }
 
 export default function App() {
-  const { token } = useStore()
+  const { token, theme } = useStore()
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme || 'dark')
+  }, [theme])
 
   return (
     <Routes>

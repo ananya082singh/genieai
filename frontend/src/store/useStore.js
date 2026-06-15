@@ -36,6 +36,13 @@ const useStore = create((set) => ({
     localStorage.removeItem('token')
     set({ user: null, token: null })
   },
+  theme: localStorage.getItem('theme') || 'dark',
+  toggleTheme: () => set((s) => {
+    const next = s.theme === 'dark' ? 'light' : 'dark'
+    localStorage.setItem('theme', next)
+    document.documentElement.setAttribute('data-theme', next)
+    return { theme: next }
+  })
 }))
 
 export default useStore
