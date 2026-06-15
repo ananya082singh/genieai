@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { analyzeDifficulty } from '../../services/api'
 import toast from 'react-hot-toast'
+import { BarChart3, RefreshCw, TrendingUp, Lightbulb } from 'lucide-react'
 
 export default function DifficultyAnalyzer({ idea, userSkills }) {
   const [result, setResult] = useState(null)
@@ -26,13 +27,13 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
 
   const getScoreColor = (score) => {
     if (score >= 8) return '#f97066'  // Red - Hard
-    if (score >= 5) return '#f4c430'  // Yellow - Medium
+    if (score >= 5) return 'var(--accent)'  // Gold/Sand Accent - Medium
     return '#5ad4c8'                   // Teal - Easy
   }
 
   const getMatchColor = (pct) => {
     if (pct >= 70) return '#5ad4c8'   // Good match
-    if (pct >= 40) return '#f4c430'   // Moderate
+    if (pct >= 40) return 'var(--accent)'   // Moderate
     return '#f97066'                   // Low match
   }
 
@@ -42,9 +43,9 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
         onClick={analyze} 
         disabled={loading}
         style={{
-          background: 'rgba(124,106,247,0.1)',
-          border: '1px solid rgba(124,106,247,0.3)',
-          color: '#7c6af7',
+          background: 'var(--accent-bg)',
+          border: '1px solid rgba(214, 158, 46, 0.3)',
+          color: 'var(--accent)',
           padding: '10px 16px',
           borderRadius: '8px',
           cursor: loading ? 'wait' : 'pointer',
@@ -53,8 +54,12 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          marginTop: '1rem'
+          marginTop: '1rem',
+          fontFamily: 'var(--font-body)',
+          transition: 'all 0.2s'
         }}
+        onMouseEnter={(e) => e.currentTarget.style.opacity = 0.9}
+        onMouseLeave={(e) => e.currentTarget.style.opacity = 1}
       >
         {loading ? (
           <>
@@ -62,7 +67,9 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
             Analyzing difficulty...
           </>
         ) : (
-          <>📊 Analyze Difficulty</>
+          <>
+            <BarChart3 size={14} /> Analyze Difficulty
+          </>
         )}
       </button>
     )
@@ -70,11 +77,12 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
 
   return (
     <div style={{
-      background: '#13151f',
-      border: '1px solid #2a2d3e',
+      background: 'var(--bg-input)',
+      border: '1px solid var(--border)',
       borderRadius: '12px',
       padding: '1.25rem',
-      marginTop: '1rem'
+      marginTop: '1rem',
+      transition: 'all 0.2s'
     }}>
       {/* Score Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.25rem' }}>
@@ -82,45 +90,45 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
           <div style={{
             fontSize: '2rem',
             fontWeight: 800,
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'var(--font-display)',
             color: getScoreColor(result.difficulty_score)
           }}>
             {result.difficulty_score}
-            <span style={{ fontSize: '1rem', color: '#8a8aaa' }}>/10</span>
+            <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>/10</span>
           </div>
-          <div style={{ fontSize: '11px', color: '#8a8aaa', marginTop: '4px' }}>Difficulty</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>Difficulty</div>
         </div>
 
         <div style={{ textAlign: 'center' }}>
           <div style={{
             fontSize: '2rem',
             fontWeight: 800,
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'var(--font-display)',
             color: getMatchColor(result.skill_match_percent)
           }}>
             {result.skill_match_percent}
-            <span style={{ fontSize: '1rem', color: '#8a8aaa' }}>%</span>
+            <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>%</span>
           </div>
-          <div style={{ fontSize: '11px', color: '#8a8aaa', marginTop: '4px' }}>Skill Match</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>Skill Match</div>
         </div>
 
         <div style={{ textAlign: 'center' }}>
           <div style={{
             fontSize: '2rem',
             fontWeight: 800,
-            fontFamily: 'Syne, sans-serif',
-            color: '#7c6af7'
+            fontFamily: 'var(--font-display)',
+            color: 'var(--accent)'
           }}>
             {result.estimated_weeks}
           </div>
-          <div style={{ fontSize: '11px', color: '#8a8aaa', marginTop: '4px' }}>Weeks</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>Weeks</div>
         </div>
       </div>
 
       {/* Skills Gap */}
       {result.missing_skills?.length > 0 && (
         <div style={{ marginBottom: '1rem' }}>
-          <div style={{ fontSize: '11px', color: '#8a8aaa', marginBottom: '6px', fontWeight: 500 }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '6px', fontWeight: 500 }}>
             Skills to Learn ({result.missing_skills.length})
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -131,9 +139,12 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
                 color: '#f97066',
                 padding: '4px 10px',
                 borderRadius: '20px',
-                fontSize: '12px'
+                fontSize: '12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
               }}>
-                ↗ {skill}
+                <TrendingUp size={12} /> {skill}
               </span>
             ))}
           </div>
@@ -143,7 +154,7 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
       {/* Complexity Bars */}
       {result.complexity_breakdown && (
         <div style={{ marginBottom: '1rem' }}>
-          <div style={{ fontSize: '11px', color: '#8a8aaa', marginBottom: '8px', fontWeight: 500 }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '8px', fontWeight: 500 }}>
             Complexity Breakdown
           </div>
           {Object.entries(result.complexity_breakdown).map(([layer, score]) => (
@@ -156,7 +167,7 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
               <div style={{
                 width: '80px',
                 fontSize: '11px',
-                color: '#8a8aaa',
+                color: 'var(--text-secondary)',
                 textTransform: 'capitalize'
               }}>
                 {layer.replace('_', ' ')}
@@ -164,7 +175,7 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
               <div style={{
                 flex: 1,
                 height: '6px',
-                background: '#2a2d3e',
+                background: 'var(--border)',
                 borderRadius: '3px',
                 overflow: 'hidden'
               }}>
@@ -178,7 +189,7 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
               </div>
               <div style={{
                 fontSize: '11px',
-                color: '#8a8aaa',
+                color: 'var(--text-secondary)',
                 width: '24px',
                 textAlign: 'right'
               }}>
@@ -192,15 +203,21 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
       {/* Recommendation */}
       {result.recommendation && (
         <div style={{
-          background: 'rgba(124,106,247,0.05)',
-          border: '1px solid rgba(124,106,247,0.15)',
+          background: 'var(--accent-bg)',
+          border: '1px solid rgba(214, 158, 46, 0.15)',
           borderRadius: '8px',
           padding: '12px',
           fontSize: '13px',
-          color: '#7c6af7',
-          lineHeight: 1.5
+          color: 'var(--accent)',
+          lineHeight: 1.5,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '8px'
         }}>
-          💡 <strong>Recommendation:</strong> {result.recommendation}
+          <Lightbulb size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+          <div>
+            <strong>Recommendation:</strong> {result.recommendation}
+          </div>
         </div>
       )}
 
@@ -209,16 +226,19 @@ export default function DifficultyAnalyzer({ idea, userSkills }) {
         onClick={() => setResult(null)}
         style={{
           background: 'transparent',
-          border: '1px solid #2a2d3e',
-          color: '#8a8aaa',
+          border: '1px solid var(--border)',
+          color: 'var(--text-secondary)',
           padding: '6px 12px',
           borderRadius: '6px',
           cursor: 'pointer',
           fontSize: '12px',
-          marginTop: '12px'
+          marginTop: '12px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px'
         }}
       >
-        🔄 Re-analyze
+        <RefreshCw size={12} /> Re-analyze
       </button>
     </div>
   )
