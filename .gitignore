@@ -23,3 +23,7 @@ frontend/.env
 # System
 .DS_Store
 .DS_Store?
+
+# Agent skills
+.agents/
+skills-lock.json
