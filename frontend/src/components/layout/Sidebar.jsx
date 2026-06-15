@@ -1,36 +1,50 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import useStore from '../../store/useStore'
+import {
+  LayoutDashboard,
+  Lightbulb,
+  GitFork,
+  Cpu,
+  Dna,
+  Bookmark,
+  Search,
+  MessageSquare,
+  LogOut,
+  Terminal,
+  Sun,
+  Moon
+} from 'lucide-react'
 
 const navItems = [
   {
     section: 'Overview',
     items: [
-      { path: '/dashboard', icon: '📈', label: 'Dashboard' },
+      { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     ]
   },
 
   {
     section: 'Generate',
     items: [
-      { path: '/', icon: '💡', label: 'Idea Generator' },
-      { path: '/roadmap', icon: '🗺️', label: 'Roadmaps' },
-      { path: '/stack', icon: '⚙️', label: 'Tech Stack' },
-      { path: '/evolve', icon: '🧬', label: 'Idea Evolution' },
+      { path: '/', icon: Lightbulb, label: 'Idea Generator' },
+      { path: '/roadmap', icon: GitFork, label: 'Roadmaps' },
+      { path: '/stack', icon: Cpu, label: 'Tech Stack' },
+      { path: '/evolve', icon: Dna, label: 'Idea Evolution' },
     ]
   },
 
   {
     section: 'Library',
     items: [
-      { path: '/saved', icon: '🔖', label: 'Saved Ideas' },
-      { path: '/search', icon: '🔍', label: 'Browse & Filter' },
+      { path: '/saved', icon: Bookmark, label: 'Saved Ideas' },
+      { path: '/search', icon: Search, label: 'Browse & Filter' },
     ]
   },
 
   {
     section: 'Assistant',
     items: [
-      { path: '/chat', icon: '🤖', label: 'AI Chatbot' },
+      { path: '/chat', icon: MessageSquare, label: 'AI Chatbot' },
     ]
   },
 ]
@@ -43,7 +57,9 @@ export default function Sidebar() {
     ideas,
     savedIdeas,
     logout,
-    token
+    token,
+    theme,
+    toggleTheme
   } = useStore()
 
   return (
@@ -51,8 +67,8 @@ export default function Sidebar() {
       style={{
         width: '220px',
         minHeight: '100vh',
-        background: '#13151f',
-        borderRight: '1px solid #2a2d3e',
+        background: 'var(--bg-card)',
+        borderRight: '1px solid var(--border)',
         padding: '1.5rem 1rem',
         display: 'flex',
         flexDirection: 'column',
@@ -61,6 +77,7 @@ export default function Sidebar() {
         top: 0,
         height: '100vh',
         overflowY: 'auto',
+        transition: 'background-color 0.2s, border-color 0.2s'
       }}
     >
       {/* Logo */}
@@ -78,24 +95,25 @@ export default function Sidebar() {
             width: '36px',
             height: '36px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg,#7c6af7,#5ad4c8)',
+            background: 'var(--bg-input)',
+            border: '1px solid var(--border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '18px',
+            color: 'var(--accent)',
+            transition: 'background-color 0.2s, border-color 0.2s, color 0.2s'
           }}
         >
-          ✨
+          <Terminal size={18} />
         </div>
 
         <span
           style={{
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'var(--font-display)',
             fontWeight: 800,
             fontSize: '1.2rem',
-            background: 'linear-gradient(90deg,#7c6af7,#5ad4c8)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            color: 'var(--text-primary)',
+            transition: 'color 0.2s'
           }}
         >
           GenieAI
@@ -108,10 +126,11 @@ export default function Sidebar() {
           <div
             style={{
               fontSize: '10px',
-              fontWeight: 500,
+              fontWeight: 600,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: '#3a3d52',
+              color: 'var(--text-secondary)',
+              opacity: 0.7,
               padding: '12px 12px 4px',
             }}
           >
@@ -120,6 +139,7 @@ export default function Sidebar() {
 
           {section.items.map((item) => {
             const active = location.pathname === item.path
+            const Icon = item.icon
 
             return (
               <button
@@ -138,32 +158,33 @@ export default function Sidebar() {
                   textAlign: 'left',
                   transition: 'all 0.2s',
                   background: active
-                    ? 'rgba(124,106,247,0.15)'
+                    ? 'var(--accent-bg)'
                     : 'transparent',
-                  color: active ? '#7c6af7' : '#8a8aaa',
-                  fontWeight: active ? 500 : 400,
+                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
+                  fontWeight: active ? 600 : 400,
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
-                    e.currentTarget.style.background = '#1a1d2a'
-                    e.currentTarget.style.color = '#f0f0f8'
+                    e.currentTarget.style.background = 'var(--bg-input)'
+                    e.currentTarget.style.color = 'var(--text-primary)'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!active) {
                     e.currentTarget.style.background = 'transparent'
-                    e.currentTarget.style.color = '#8a8aaa'
+                    e.currentTarget.style.color = 'var(--text-secondary)'
                   }
                 }}
               >
                 <span
                   style={{
-                    fontSize: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     width: '20px',
-                    textAlign: 'center',
                   }}
                 >
-                  {item.icon}
+                  <Icon size={16} />
                 </span>
 
                 {item.label}
@@ -178,24 +199,28 @@ export default function Sidebar() {
         style={{
           marginTop: 'auto',
           paddingTop: '1rem',
-          borderTop: '1px solid #2a2d3e',
+          borderTop: '1px solid var(--border)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
         }}
       >
         {/* Session Stats */}
         <div
           style={{
-            background: '#13151f',
-            border: '1px solid #2a2d3e',
+            background: 'var(--bg-app)',
+            border: '1px solid var(--border)',
             borderRadius: '10px',
             padding: '12px',
             fontSize: '12px',
-            color: '#8a8aaa',
-            marginBottom: token ? '12px' : '0px',
+            color: 'var(--text-secondary)',
+            marginBottom: token ? '4px' : '0px',
+            transition: 'background-color 0.2s, border-color 0.2s'
           }}
         >
           <div
             style={{
-              color: '#7c6af7',
+              color: 'var(--accent)',
               fontWeight: 600,
               marginBottom: '4px',
             }}
@@ -205,18 +230,50 @@ export default function Sidebar() {
 
           <div>
             Ideas generated:{' '}
-            <span style={{ color: '#f0f0f8', fontWeight: 500 }}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
               {ideas.length}
             </span>
           </div>
 
           <div>
             Saved:{' '}
-            <span style={{ color: '#f0f0f8', fontWeight: 500 }}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
               {savedIdeas.length}
             </span>
           </div>
         </div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '10px',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+            background: 'transparent',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+            fontSize: '13px',
+            transition: '0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'var(--bg-input)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+          }}
+        >
+          {theme === 'dark' ? (
+            <><Sun size={14} /> Light Mode</>
+          ) : (
+            <><Moon size={14} /> Dark Mode</>
+          )}
+        </button>
 
         {/* Logout Button */}
         {token && (
@@ -227,23 +284,27 @@ export default function Sidebar() {
             }}
             style={{
               width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
               padding: '10px',
               borderRadius: '8px',
-              border: '1px solid #2a2d3e',
+              border: '1px solid var(--border)',
               background: 'transparent',
-              color: '#f0f0f8',
+              color: 'var(--text-primary)',
               cursor: 'pointer',
               fontSize: '13px',
               transition: '0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#1a1d2a'
+              e.currentTarget.style.background = 'var(--bg-input)'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
             }}
           >
-            🚪 Logout
+            <LogOut size={14} /> Logout
           </button>
         )}
       </div>
