@@ -2,30 +2,31 @@ import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { evolveStep } from '../services/api'
 import toast from 'react-hot-toast'
+import { Sprout, Brain, Zap, Rocket, Dna, RefreshCw, Sparkles, ArrowLeft, FolderClosed } from 'lucide-react'
 
 const EVOLUTION_STEPS = [
   { 
     id: 1, 
     label: 'Base MVP', 
-    icon: '🌱', 
+    icon: Sprout, 
     description: 'Core functionality — what the project does at its simplest'
   },
   { 
     id: 2, 
     label: 'Add AI Layer', 
-    icon: '🧠', 
+    icon: Brain, 
     description: 'Integrate ML model or AI API to make it intelligent'
   },
   { 
     id: 3, 
     label: 'Add Real-time', 
-    icon: '⚡', 
+    icon: Zap, 
     description: 'WebSockets, live updates, collaborative features'
   },
   { 
     id: 4, 
     label: 'Production Ready', 
-    icon: '🚀', 
+    icon: Rocket, 
     description: 'Auth, deployment, monitoring, scalability'
   },
 ]
@@ -71,11 +72,13 @@ export default function EvolvePage() {
   if (!idea) {
     return (
       <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '5rem 2rem' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🧬</div>
-        <div style={{ fontFamily: 'Syne, sans-serif', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--border)', marginBottom: '1.5rem' }}>
+          <FolderClosed size={64} />
+        </div>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
           No Idea Selected
         </div>
-        <p style={{ color: '#8a8aaa', fontSize: '14px', marginBottom: '2rem' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '2rem' }}>
           Select a project idea and click "Evolve" to see its evolution path
         </p>
         <button onClick={() => navigate('/')} className="btn-primary">
@@ -92,48 +95,96 @@ export default function EvolvePage() {
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '1.75rem', marginBottom: '8px' }}>
-          🧬 Idea Evolution
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.75rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+          <Dna size={28} /> Idea Evolution
         </h1>
-        <p style={{ color: '#8a8aaa', fontSize: '14px' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
           Evolve your idea step-by-step from MVP to production
         </p>
       </div>
 
-      {/* Current Idea */}
+      {/* Current Idea Panel */}
       <div style={{
-        background: 'rgba(124,106,247,0.05)',
-        border: '1px solid rgba(124,106,247,0.2)',
-        borderRadius: '12px',
-        padding: '1.25rem 1.5rem',
-        marginBottom: '2rem'
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
+        borderRadius: '16px',
+        padding: '1.75rem',
+        marginBottom: '2rem',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '2rem',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        transition: 'all 0.2s'
       }}>
-        <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.05rem', marginBottom: '6px' }}>
-          {idea.title}
+        <div style={{ flex: '1 1 450px' }}>
+          <span style={{ 
+            fontSize: '11px', 
+            textTransform: 'uppercase', 
+            fontWeight: 600, 
+            letterSpacing: '0.05em', 
+            color: 'var(--accent)', 
+            display: 'inline-block',
+            marginBottom: '6px'
+          }}>
+            Active Project Scope
+          </span>
+          <h2 style={{ 
+            fontFamily: 'var(--font-display)', 
+            fontWeight: 800, 
+            fontSize: '1.35rem', 
+            color: 'var(--text-primary)',
+            marginBottom: '8px'
+          }}>
+            {idea.title}
+          </h2>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+            {idea.description}
+          </p>
+          
+          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+            <span style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', padding: '3px 10px', borderRadius: '6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {idea.domain}
+            </span>
+            <span style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', padding: '3px 10px', borderRadius: '6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {idea.difficulty}
+            </span>
+          </div>
         </div>
-        <p style={{ fontSize: '13px', color: '#8a8aaa', lineHeight: 1.5 }}>
-          {idea.description}
-        </p>
-        
-        {/* Progress Bar */}
-        <div style={{ marginTop: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#8a8aaa', marginBottom: '6px' }}>
+
+        {/* Progress Tracker Card */}
+        <div style={{
+          flex: '0 0 240px',
+          background: 'var(--bg-input)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          padding: '1.25rem',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '240px',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '8px', fontWeight: 500 }}>
             <span>Evolution Progress</span>
-            <span style={{ color: '#7c6af7', fontWeight: 600 }}>{completedSteps}/{EVOLUTION_STEPS.length} stages</span>
+            <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{completedSteps}/{EVOLUTION_STEPS.length} stages</span>
           </div>
           <div style={{
             height: '6px',
-            background: '#2a2d3e',
+            background: 'var(--border)',
             borderRadius: '3px',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            marginBottom: '8px'
           }}>
             <div style={{
               width: `${progress}%`,
               height: '100%',
-              background: 'linear-gradient(90deg, #7c6af7, #5ad4c8)',
+              background: 'var(--accent)',
               borderRadius: '3px',
               transition: 'width 0.5s ease'
             }} />
+          </div>
+          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'right' }}>
+            {Math.round(progress)}% Completed
           </div>
         </div>
       </div>
@@ -147,7 +198,7 @@ export default function EvolvePage() {
           top: '32px',
           bottom: '32px',
           width: '2px',
-          background: 'linear-gradient(to bottom, #7c6af7, #5ad4c8)',
+          background: 'var(--border)',
           borderRadius: '1px',
           zIndex: 0
         }} />
@@ -157,6 +208,7 @@ export default function EvolvePage() {
           {EVOLUTION_STEPS.map((step) => {
             const isComplete = steps[step.id]
             const isLoading = loading === step.id
+            const StepIcon = step.icon
             
             return (
               <div key={step.id} style={{
@@ -171,24 +223,25 @@ export default function EvolvePage() {
                   width: '48px',
                   height: '48px',
                   borderRadius: '50%',
-                  background: isComplete ? 'rgba(90,212,200,0.15)' : '#1a1d2a',
-                  border: isComplete ? '2px solid #5ad4c8' : '2px solid #2a2d3e',
+                  background: isComplete ? 'rgba(90,212,200,0.15)' : 'var(--bg-card)',
+                  border: isComplete ? '2px solid #5ad4c8' : '2px solid var(--border)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '20px',
+                  color: isComplete ? '#5ad4c8' : 'var(--text-secondary)',
                   flexShrink: 0,
                   transition: 'all 0.3s'
                 }}>
-                  {step.icon}
+                  <StepIcon size={20} />
                 </div>
 
                 {/* Step Content */}
                 <div style={{
-                  background: '#1a1d2a',
-                  border: '1px solid #2a2d3e',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border)',
                   borderRadius: '12px',
-                  padding: '1.25rem 1.5rem'
+                  padding: '1.25rem 1.5rem',
+                  transition: 'all 0.2s'
                 }}>
                   <div style={{
                     display: 'flex',
@@ -198,7 +251,7 @@ export default function EvolvePage() {
                     flexWrap: 'wrap',
                     gap: '8px'
                   }}>
-                    <div style={{ fontWeight: 600, fontSize: '15px' }}>
+                    <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>
                       {step.label}
                     </div>
                     
@@ -206,9 +259,9 @@ export default function EvolvePage() {
                       onClick={() => handleEvolve(step.id)}
                       disabled={isLoading}
                       style={{
-                        background: isComplete ? 'rgba(90,212,200,0.1)' : 'rgba(124,106,247,0.1)',
-                        border: `1px solid ${isComplete ? 'rgba(90,212,200,0.3)' : 'rgba(124,106,247,0.3)'}`,
-                        color: isComplete ? '#5ad4c8' : '#7c6af7',
+                        background: isComplete ? 'rgba(90,212,200,0.1)' : 'var(--accent-bg)',
+                        border: `1px solid ${isComplete ? 'rgba(90,212,200,0.3)' : 'rgba(214, 158, 46, 0.3)'}`,
+                        color: isComplete ? '#5ad4c8' : 'var(--accent)',
                         padding: '6px 14px',
                         borderRadius: '6px',
                         cursor: isLoading ? 'wait' : 'pointer',
@@ -216,7 +269,7 @@ export default function EvolvePage() {
                         fontWeight: 500,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '6px'
                       }}
                     >
                       {isLoading ? (
@@ -225,16 +278,16 @@ export default function EvolvePage() {
                           Evolving...
                         </>
                       ) : isComplete ? (
-                        '🔄 Re-evolve'
+                        <><RefreshCw size={12} /> Re-evolve</>
                       ) : (
-                        '✨ Evolve'
+                        <><Sparkles size={12} /> Evolve</>
                       )}
                     </button>
                   </div>
 
                   <p style={{
                     fontSize: '13px',
-                    color: '#8a8aaa',
+                    color: 'var(--text-secondary)',
                     marginBottom: steps[step.id] ? '12px' : '0',
                     lineHeight: 1.5
                   }}>
@@ -244,13 +297,15 @@ export default function EvolvePage() {
                   {/* Evolution Result */}
                   {steps[step.id] && (
                     <div style={{
-                      background: '#13151f',
+                      background: 'var(--bg-input)',
+                      border: '1px solid var(--border)',
                       borderRadius: '8px',
                       padding: '14px',
                       fontSize: '13px',
-                      color: '#f0f0f8',
+                      color: 'var(--text-primary)',
                       lineHeight: 1.6,
-                      borderLeft: '3px solid #5ad4c8'
+                      marginTop: '12px',
+                      transition: 'all 0.2s'
                     }}>
                       {steps[step.id]}
                     </div>
@@ -272,11 +327,10 @@ export default function EvolvePage() {
           padding: '1.25rem 1.5rem',
           textAlign: 'center'
         }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🎉</div>
-          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '1.1rem', color: '#5ad4c8', marginBottom: '0.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', color: '#5ad4c8', marginBottom: '0.5rem' }}>
             Evolution Complete!
           </div>
-          <p style={{ fontSize: '13px', color: '#8a8aaa' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
             You now have a full roadmap from MVP to production-ready deployment
           </p>
         </div>
@@ -286,9 +340,9 @@ export default function EvolvePage() {
       <button
         onClick={() => navigate('/')}
         className="btn-ghost"
-        style={{ marginTop: '2rem' }}
+        style={{ marginTop: '2rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
       >
-        ← Back to Ideas
+        <ArrowLeft size={14} /> Back to Ideas
       </button>
     </div>
   )
